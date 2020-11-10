@@ -112,14 +112,14 @@ window.addEventListener(
                     hang -= 2;
                     hang = Util.limit(hang, -6, 0)
                 }else{
-                    hangTimer += dt * 1000
+                    hangTimer += dt * 1000;
                 }
             }
             
        }else if(keyRight){
         if(speed > 0){
             playerX = playerX + dx;
-            if(hangTimer>= hangDelay){
+            if(hangTimer >= hangDelay){
                 hangTimer = 0;
                 hang += 2;
                 hang = Util.limit(hang, 0, 6);
@@ -142,11 +142,13 @@ window.addEventListener(
        if(keySlower){
             speed = Util.accelerate(speed, breaking, dt);
             brake = 14;
+
        }else if (keyFaster){
-            speed = Util.accelerate(speed, decel, dt);
-            brake = 0;
-       }else{
             speed = Util.accelerate(speed, accel, dt);
+            brake = 0;
+            console.log(speed);
+       }else{
+            speed = Util.accelerate(speed, decel, dt);
             brake = 0;
        }
 
@@ -197,4 +199,50 @@ window.addEventListener(
           }
     }
 
+Render.speedometer(ctx, width, height, resolution, roadWidth, sprites, 0, 0.0008333333333333, width, height);
+ctx = canvas.getContext("2d");
+ctx.beginPath();
+if(speed <4000){
+canvas_arrow(ctx, width-82, height-64, width-125, height-45 - (speed/100));
+// canvas_arrow(ctx, width-80, height-64, width-120, height-95);
+}
+if(speed >=4000 && speed<8000){
+    canvas_arrow(ctx, width-82, height-64, width-125 + ((speed-4001)/88.9), height-85-((speed-4000)/150));
+    console.log(width);
+    }
+    if(speed >=8000 && speed<10000){
+        canvas_arrow(ctx, width-82, height-64, width-80 + ((speed-8001)/88.9), height-110 + ((speed-8000)/150));
+        }
+    if(speed >=10000 && speed<12040){
+        canvas_arrow(ctx, width-82, height-64, width-55 + ((speed-10001)/88.9), height-100 + ((speed-10000)/100));
+    
+    }
+ctx.strokeStyle = '#fff';
+ctx.lineWidth = 3;
+ctx.stroke();
+
+ctx.save();
+ctx.stroke();
+ctx.restore();
+
+
+
+function canvas_arrow(context, fromx, fromy, tox, toy) {
+  var headlen = 15; // length of head in pixels
+  var dx = tox - fromx;
+  var dy = toy - fromy;
+  var angle = Math.atan2(dy, dx);
+  context.moveTo(fromx, fromy);
+  context.lineTo(tox, toy);
+  context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 7));
+  context.moveTo(tox, toy);
+  context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 10));
+}
+ctx.font = "20px Arial";
+ctx.fillStyle = "#fff";
+if(speed > 10000){
+ctx.fillStyle = "#ff0067";   
+}
+
+ctx.fillText(Math.floor((speed/40)),width-125, height-25); 
    };
